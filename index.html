@@ -154,6 +154,15 @@ header{background:var(--forest);padding:18px 32px;border-bottom:3px solid var(--
   .proto,.vdesc{padding-left:16px;padding-right:16px}
   .collab-grid{grid-template-columns:1fr}
 }
+
+/* MEETINGS BANNER */
+.meetings-banner{background:var(--forest);border-radius:8px;padding:14px 18px;margin:16px 32px 0;color:var(--wh)}
+.meetings-title{font-family:Lora,serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mint);margin-bottom:10px}
+.meeting-list{display:flex;flex-direction:column;gap:7px}
+.meeting-item{display:flex;align-items:baseline;gap:10px;font-size:12px}
+.meeting-date{font-weight:700;color:var(--mint);white-space:nowrap;min-width:70px}
+.meeting-topic{color:var(--wh);line-height:1.4}
+@media(max-width:640px){.meetings-banner{margin:12px 16px 0}}
 </style>
 </head>
 <body>
@@ -193,6 +202,16 @@ header{background:var(--forest);padding:18px 32px;border-bottom:3px solid var(--
   </div>
 </div>
 <script>
+
+// ── UPCOMING MEETINGS (update manually each month) ───────────────
+// To update: change the date, topic, and notes fields below,
+// then re-upload index.html to GitHub.
+var UPCOMING_MEETINGS = [
+  { date: "May 5",  topic: "Ads", notes: "with Monica's ads manager" },
+  { date: "June 2", topic: "Vibe Coding", notes: "with Monica's husband?" },
+  { date: "July 7", topic: "Webinar Swaps", notes: "" }
+];
+
 var MEMBERS=[
 {id:1,name:"Lori Puma",website:"https://loripuma.com",email:"lori@loripuma.com",
 publicBio:"",
@@ -939,7 +958,7 @@ function switchView(v){
   state.sort='default';
   document.getElementById('si').value=''; state.search='';
   setSort('default');
-  renderFilters(); renderCards();
+  renderMeetings(); renderFilters(); renderCards();
 }
 
 // ── PASSWORD ─────────────────────────────────────────────────────
@@ -961,6 +980,26 @@ function checkPw(){
 document.getElementById('pmo').addEventListener('keydown',function(e){
   if(e.key==='Escape'){ this.classList.add('hidden'); document.getElementById('tab-member').focus(); }
 });
+
+
+// ── RENDER MEETINGS BANNER ───────────────────────────────────────
+function renderMeetings(){
+  var existing = document.getElementById('meetings-banner');
+  if(existing) existing.remove();
+  if(state.view !== 'member' || !UPCOMING_MEETINGS.length) return;
+  var h = '<div class="meetings-banner" id="meetings-banner">';
+  h += '<div class="meetings-title">Upcoming Monthly Meetings</div>';
+  h += '<div class="meeting-list">';
+  UPCOMING_MEETINGS.forEach(function(m){
+    h += '<div class="meeting-item">';
+    h += '<span class="meeting-date">'+escH(m.date)+'</span>';
+    h += '<span class="meeting-topic">'+escH(m.topic)+(m.notes?' <span style="opacity:.75">'+escH(m.notes)+'</span>':'')+'</span>';
+    h += '</div>';
+  });
+  h += '</div></div>';
+  var vdesc = document.getElementById('vdesc');
+  vdesc.insertAdjacentHTML('afterend', h);
+}
 
 // ── RENDER FILTERS ───────────────────────────────────────────────
 function renderFilters(){
@@ -1088,6 +1127,7 @@ function memberCard(m){
 // ── INIT ─────────────────────────────────────────────────────────
 renderFilters();
 renderCards();
+// meetings banner only shows in member view so no init call needed
 </script>
 </body>
 </html>
