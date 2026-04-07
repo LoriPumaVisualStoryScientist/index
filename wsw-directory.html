@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Author Services Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#2d4a3e;--sage:#4a7c66;--mint:#a8c5b5;--mintbg:#edf4f0;
+  --amber:#c4884a;--cream:#f7f3ec;--card:#fdfaf6;--text:#1e2d27;
+  --border:#d5c9b8;--muted:#5a7a6a;--wh:#fff;--red:#a33020;
+  --mustard:#8a6a20
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Open Sans',sans-serif;font-size:14px;color:var(--text);background:var(--cream);min-height:100vh}
+
+/* HEADER */
+header{background:var(--forest);padding:18px 32px;border-bottom:3px solid var(--sage)}
+.ht{font-family:Lora,serif;font-size:22px;color:var(--wh);font-weight:700}
+.hs{font-size:12px;color:var(--mint);margin-top:3px;opacity:.85}
+
+/* PROTO BAR */
+.proto{background:#fef9ec;border-bottom:1px solid #e8d9a0;padding:7px 32px;font-size:11px;color:#7a5c1a}
+
+/* TABS */
+.view-bar{background:var(--card);border-bottom:2px solid var(--border);padding:0 32px;display:flex;align-items:center}
+.vtab{padding:13px 20px;font-family:'Open Sans',sans-serif;font-size:13px;font-weight:700;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}
+.vtab.active{color:var(--forest);border-bottom-color:var(--sage)}
+.vtab:hover:not(.active){color:var(--forest);background:var(--cream)}
+.vtab:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.vdesc{background:var(--mintbg);border-bottom:1px solid var(--mint);padding:9px 32px;font-size:12px;color:var(--sage);line-height:1.5}
+
+/* FILTER AREA */
+.fa{background:var(--card);border-bottom:1px solid var(--border);padding:12px 32px}
+.fgroup{margin-bottom:10px}
+.fgroup:last-child{margin-bottom:0}
+.fgroup-label{font-size:10px;font-weight:700;color:var(--forest);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;padding-left:2px}
+.fchips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{padding:4px 12px;border-radius:20px;border:1.5px solid var(--mint);background:var(--card);color:var(--sage);font-size:11px;font-family:'Open Sans',sans-serif;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.chip:hover{background:var(--mintbg);border-color:var(--sage)}
+.chip.active{background:var(--sage);border-color:var(--sage);color:var(--wh)}
+.chip:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.chip[aria-pressed="true"]{background:var(--sage);border-color:var(--sage);color:var(--wh)}
+.filter-footer{display:flex;align-items:center;gap:16px;margin-top:8px;flex-wrap:wrap}
+.clrbtn{font-size:11px;color:var(--amber);background:none;border:none;cursor:pointer;font-family:'Open Sans',sans-serif;font-weight:700;text-decoration:underline;padding:0}
+.clrbtn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+
+/* SEARCH + SORT BAR */
+.sb{padding:9px 32px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--cream);border-bottom:1px solid var(--border)}
+.sb-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.rc{font-size:12px;color:var(--muted);font-weight:600}
+.sort-wrap{display:flex;align-items:center;gap:6px}
+.sort-label{font-size:11px;color:var(--muted);font-weight:600}
+.sort-btn{padding:4px 10px;border-radius:16px;border:1.5px solid var(--mint);background:var(--card);color:var(--sage);font-size:11px;font-family:'Open Sans',sans-serif;font-weight:600;cursor:pointer;transition:all .15s}
+.sort-btn.active{background:var(--forest);border-color:var(--forest);color:var(--wh)}
+.sort-btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.si{padding:7px 12px;border:1.5px solid var(--mint);border-radius:6px;font-family:'Open Sans',sans-serif;font-size:12px;color:var(--text);background:var(--card);width:260px;outline:none;transition:border-color .2s}
+.si:focus{border-color:var(--sage)}
+.si::placeholder{color:var(--mint)}
+
+/* CARDS GRID */
+.cg{padding:20px 32px 48px;display:grid;grid-template-columns:repeat(auto-fill,minmax(315px,1fr));gap:18px}
+
+/* CARD */
+.card{background:var(--card);border-radius:8px;border:1px solid var(--border);border-top:4px solid var(--sage);box-shadow:0 2px 8px rgba(45,74,62,.06);overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .2s}
+.card:hover{box-shadow:0 4px 16px rgba(45,74,62,.12)}
+.ch{padding:16px 20px 10px;border-bottom:1px solid var(--border)}
+.cn{font-family:Lora,serif;font-size:17px;font-weight:700;color:var(--forest)}
+.cn a{color:var(--forest);text-decoration:none}
+.cn a:hover{color:var(--sage)}
+.cn a:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.ct{font-family:Lora,serif;font-size:12px;color:var(--sage);margin-top:4px;font-style:italic;line-height:1.4}
+.cb{padding:12px 20px 0;flex:1}
+
+/* BIO */
+.bw{margin-bottom:11px}
+.bio{font-size:12px;color:#2a3d33;line-height:1.7}
+.bioc{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.rmb{background:none;border:none;color:var(--amber);font-size:11px;font-family:'Open Sans',sans-serif;font-weight:700;cursor:pointer;padding:3px 0 0;display:block}
+.rmb:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+
+/* SERVICE/GENRE GROUPS ON CARD */
+.cs{margin-bottom:10px}
+.cs:last-child{margin-bottom:0}
+.sl{font-size:10px;font-weight:700;color:var(--sage);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.service-group{margin-bottom:6px}
+.service-group:last-child{margin-bottom:0}
+.sg-label{font-size:10px;color:var(--muted);font-weight:600;margin-bottom:3px;font-style:italic}
+.genre-split{display:flex;flex-direction:column;gap:5px}
+.genre-row{}
+.genre-row-label{font-size:10px;color:var(--muted);font-weight:600;margin-bottom:3px}
+
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-size:11px;padding:2px 9px;border-radius:12px;font-family:'Open Sans',sans-serif;font-weight:600;white-space:nowrap}
+.ts{background:var(--mintbg);color:var(--sage);border:1px solid var(--mint)}
+.tg{background:#f2ede6;color:#5a4530;border:1px solid #d5c9b8}
+.tnf{background:#f5f0e8;color:#7a5c20;border:1px solid #e0d0b0}
+.te{background:#fef3ec;color:#a05a20;border:1px solid #f0c89a}
+.tc{background:#edf4f0;color:var(--forest);border:1px solid var(--mint)}
+.to{background:#f5f5f2;color:#888;border:1px solid #ddd}
+
+/* COLLAB PANEL (member cards) */
+.collab{padding:11px 20px;background:var(--mintbg);border-top:1px solid var(--mint)}
+.collab-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.collab-contact{display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid var(--mint);gap:8px;flex-wrap:wrap}
+.contact-email{font-size:12px;font-weight:700;color:var(--forest);text-decoration:none}
+.contact-email:hover{color:var(--sage)}
+.contact-email:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.pricing-badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;font-family:'Open Sans',sans-serif}
+.pxe{background:#e8f2e8;color:#2a6632}
+.pxm{background:#fdf3e3;color:#8c5e1a}
+.pxx{background:#e8f0f4;color:#1a4a6e}
+.pxp{background:#fde8e6;color:var(--red)}
+
+/* MORE DETAILS TOGGLE */
+.mt{width:100%;background:var(--cream);border:none;border-top:1px solid var(--border);padding:8px 20px;text-align:left;font-family:'Open Sans',sans-serif;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;transition:background .15s}
+.mt:hover{background:#ede8df}
+.mt:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.md{border-top:1px solid var(--border);padding:14px 20px;background:var(--card);display:none}
+.dr{margin-bottom:9px}
+.dr:last-child{margin-bottom:0}
+.dl{font-size:10px;font-weight:700;color:var(--sage);text-transform:uppercase;letter-spacing:.7px;margin-bottom:3px}
+.dt{font-size:12px;color:var(--text);line-height:1.55}
+.dt a{color:var(--sage);text-decoration:none}
+.dt a:hover{text-decoration:underline}
+.ls{display:inline-block;font-size:11px;color:var(--sage);background:var(--mintbg);border:1px solid var(--mint);border-radius:12px;padding:2px 9px;font-weight:600}
+
+/* NO RESULTS */
+.nr{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted)}
+.nr p{font-size:15px;margin-bottom:12px}
+
+/* PASSWORD MODAL */
+.mo{position:fixed;inset:0;background:rgba(20,35,28,.65);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px)}
+.mo.hidden{display:none}
+.mb{background:var(--card);border-radius:10px;padding:36px;width:100%;max-width:400px;box-shadow:0 24px 64px rgba(45,74,62,.3);border-top:4px solid var(--sage)}
+.mtitle{font-family:Lora,serif;font-size:22px;color:var(--forest);font-weight:700;margin-bottom:8px}
+.msub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.55}
+.mi{width:100%;padding:12px 14px;border:2px solid var(--mint);border-radius:6px;font-family:'Open Sans',sans-serif;font-size:15px;color:var(--text);outline:none;margin-bottom:8px;transition:border-color .2s;background:var(--card)}
+.mi:focus{border-color:var(--sage)}
+.me{font-size:12px;color:var(--red);margin-bottom:12px;min-height:16px;font-weight:600}
+.mbtn{width:100%;padding:13px;background:var(--sage);color:var(--wh);border:none;border-radius:6px;font-family:'Open Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .15s}
+.mbtn:hover,.mbtn:focus-visible{background:var(--forest);outline:none}
+.mn{font-size:11px;color:var(--muted);margin-top:16px;text-align:center}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  header,.view-bar,.fa,.sb{padding-left:16px;padding-right:16px}
+  .cg{padding:14px 16px 40px;grid-template-columns:1fr}
+  .si{width:100%}
+  .sb{flex-direction:column;align-items:stretch}
+  .sb-left{justify-content:space-between}
+  .proto,.vdesc{padding-left:16px;padding-right:16px}
+  .collab-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="ht">Author Services Directory</div>
+  <div class="hs">Coaches, editors, and service providers for authors at every stage</div>
+</header>
+<div class="proto">&#9888; Prototype &mdash; data embedded April 2025. Information may not be current. Password for member view: <strong>WSW2026</strong></div>
+<div class="view-bar" role="tablist" aria-label="Directory views">
+  <button class="vtab active" id="tab-author" role="tab" aria-selected="true" onclick="switchView('author')">Find Help for Your Book</button>
+  <button class="vtab" id="tab-member" role="tab" aria-selected="false" onclick="switchView('member')">Member Directory &#128274;</button>
+</div>
+<div class="vdesc" id="vdesc">Browse service providers who can help with your book. Use filters to find the right match by service type, genre, or experience level.</div>
+<div class="fa" id="fa" role="search" aria-label="Filter directory"></div>
+<div class="sb">
+  <div class="sb-left">
+    <div class="rc" id="rc" aria-live="polite">Showing all 26 members</div>
+    <div class="sort-wrap">
+      <span class="sort-label">Sort:</span>
+      <button class="sort-btn active" id="sort-default" onclick="setSort('default')" aria-pressed="true">Default</button>
+      <button class="sort-btn" id="sort-az" onclick="setSort('az')" aria-pressed="false">A &rarr; Z</button>
+      <button class="sort-btn" id="sort-za" onclick="setSort('za')" aria-pressed="false">Z &rarr; A</button>
+    </div>
+  </div>
+  <input type="search" class="si" id="si" placeholder="Search by name, specialty, genre..." oninput="handleSearch(this.value)" aria-label="Search directory">
+</div>
+<div class="cg" id="cg" role="list"></div>
+
+<div class="mo hidden" id="pmo" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="mb">
+    <div class="mtitle" id="modal-title">Member Directory</div>
+    <div class="msub">This view is for members and includes contact info, pricing, and collaboration details. Enter the shared password to continue.</div>
+    <input type="password" class="mi" id="pwi" placeholder="Enter password" aria-label="Directory password" onkeydown="if(event.key==='Enter')checkPw()">
+    <div class="me" id="pwe" role="alert"></div>
+    <button class="mbtn" onclick="checkPw()">Access Member Directory</button>
+    <div class="mn">Contact your organizer if you need the password.</div>
+  </div>
+</div>
+<script>
+var MEMBERS=[
+{id:1,name:"Lori Puma",website:"https://loripuma.com",email:"lori@loripuma.com",
+publicBio:"",
+bio:"I use infographics and science to help indie authors craft breakout novels. A PhD-trained epidemiologist and former data visualization expert, I pivoted to editing and story coaching in 2017, adapting frameworks from public health and data science to help genre fiction authors create reader obsession.",
+audienceTypes:["Fiction writers"],experienceLevels:["Experienced authors (3+ books)"],
+fictionGenres:["Action/Adventure","Fantasy","Science fiction","Mystery/Thriller/Crime","Romance","Romantasy"],nonfictionCategories:[],
+audienceSentence:"Indie genre fiction authors looking to level up",
+services:["Developmental editing","Coaching (1-on-1)","Speaking/teaching"],products:["Templates/workbooks"],pricingTier:"Mix of price points",
+topOffers:"1-on-1 story coaching ($1,500) + DIY workbooks using infographics & AI ($20-80)",
+challenge2026:"Build audience through webinars (goal: 1/month in 2026), partnering with WSW members who work with experienced authors on topics other than editing.",
+lookingFor:["List swap partners","Webinar co-hosts"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker","List swaps","Group promos","Client referrals","Webinar co-host"],
+referralsAccepting:"Actively accepting dev editing referrals for F&SF, romance, or crime authors with 2+ books who want to level up. All higher-ticket dev edits include a custom visual story diagram.",
+affiliatesSeeking:"",podcastSpeaking:"",listSize:"501-2,000",socialHandles:"Instagram: @lori_puma",
+guestTeachTopics:"What Fiction Craft Books Left Out; Creating an Unforgettable Protagonist (multi-genre and romance versions); From Simple Premise to Obsessive Fandom: The Invisible Story Secret; Building the Puzzle Behind Your Mystery's Plot",
+referOutClients:"Literary fiction, historical fiction, women's fiction, screenwriters; aspiring/first-time novelists; those needing line/copy editing or publishing/marketing help",
+anythingElse:"Makes WSW meta-freebies bundling members' lead magnets. Virtual only due to vision challenges post brain tumor surgery (2018, fully resolved)."},
+{id:2,name:"Rachael Waldburger",website:"https://www.rosedeneediting.com",email:"editor@rachaelwaldburger.com",
+publicBio:"",
+bio:"Former English teacher turned indie author, editor, and book coach. I specialize in line editing and helping busy parents finish publish-ready manuscripts. Hosts a podcast for new and early career authors.",
+audienceTypes:["Fiction writers","Nonfiction writers","Poetry"],experienceLevels:["Aspiring author","First timers and early career (<3 books)"],
+fictionGenres:["Action/Adventure","Fantasy","Historical fiction","Romance","Romantasy","Women's fiction"],nonfictionCategories:["Memoir/Personal Narrative","Self-help/Personal Development","Creative Nonfiction"],
+audienceSentence:"Authors balancing parenting with writing and publishing",
+services:["Developmental editing","Line/copy editing","Coaching (1-on-1)","Query letter review","Manuscript critique","Courses (self-paced)","Membership/community","Workshops/bootcamps","Speaking/teaching"],
+products:["Templates/workbooks","Online courses"],pricingTier:"Entry level (under $500)",
+topOffers:"Templates and resources ($10-20) + Self-paced course ($400)",
+challenge2026:"Growing email list and social media audience",
+lookingFor:["Podcast guests","List swap partners","Group promo partners","Client referrals","Strategic advice"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker","List swaps","Group promos","Client referrals","Co-creation","Webinar co-host"],
+referralsAccepting:"Actively accepting coaching and dev, line, and copy editing for all fiction except horror and thriller.",
+affiliatesSeeking:"",podcastSpeaking:"Looking for guests who can discuss any writing, editing, or publishing topic for new and early career authors",
+listSize:"Under 500 (growing)",socialHandles:"Instagram: growing",
+guestTeachTopics:"How to write poetic prose (without turning purple); Ensuring each scene has a purpose; 7 steps to DIY line editing; How to write 1,000 words a day 5 minutes at a time",
+referOutClients:"",anythingElse:"Editing through referrals for a year, just beginning to expand with coaching, courses, and products. Small audience, actively building."},
+{id:3,name:"Sarah Ramsey",website:"https://www.sarahramsey.com",email:"sarah@sarahramsey.com",
+publicBio:"",
+bio:"Public relations coach who helps authors map out their PR strategy and get media coverage for book launches and events. I specialize in debut and self-published authors who want more name recognition without adding another task to their to-do list.",
+audienceTypes:["Fiction writers","Nonfiction writers"],experienceLevels:["Aspiring author","First timers and early career (<3 books)"],
+fictionGenres:["Action/Adventure","Fantasy","Historical fiction","Horror","Literary fiction","Science fiction","Mystery/Thriller/Crime","Romance","Romantasy","Women's fiction"],
+nonfictionCategories:["Memoir/Personal Narrative","Business/Leadership","Self-help/Personal Development","Health/Wellness","Creative Nonfiction","How-to/Instructional","Academic/Scholarly"],
+audienceSentence:"Debut authors who need a PR strategy and help getting media attention",
+services:["Workshops/bootcamps","Speaking/teaching","Public Relations"],products:["Online courses"],pricingTier:"Mid-tier ($500-$2,000)",
+topOffers:"Book Launch in a Box: PR strategy, press release/pitches, targeted media list ($850); PR Coaching ($500/month)",
+challenge2026:"Launching first workshop and/or class",
+lookingFor:["List swap partners","Client referrals","Co-creation partners","Webinar co-hosts","Strategic advice","Tech help"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker","List swaps","Client referrals","Co-creation","Webinar co-host"],
+referralsAccepting:"Always accepting referrals for PR coaching and authors who need book launch PR support.",
+affiliatesSeeking:"",podcastSpeaking:"",listSize:"",socialHandles:"",
+guestTeachTopics:"Why the right time to start doing PR is before you publish; How to get the right kind of media coverage; PR 101",
+referOutClients:"Would love editors, book marketers, and other service providers to recommend to clients",anythingElse:""},
+{id:4,name:"DL Croisette",website:"https://afabulousproduction.com",email:"afabulousproduction@gmail.com",
+publicBio:"",
+bio:"Romance author with 10+ novels and 20+ years of marketing expertise. I help authors connect with the right readers through cover design, book formatting, ARC campaigns, brand consistency, and custom social media strategies.",
+audienceTypes:["Fiction writers","Nonfiction writers"],experienceLevels:["Aspiring author","First timers and early career (<3 books)","Experienced authors (3+ books)","All levels"],
+fictionGenres:["Action/Adventure","Fantasy","Historical fiction","Horror","Literary fiction","Science fiction","Mystery/Thriller/Crime","Romance","Romantasy","Women's fiction"],
+nonfictionCategories:["Memoir/Personal Narrative","Business/Leadership","Self-help/Personal Development","Health/Wellness","Creative Nonfiction","How-to/Instructional","Academic/Scholarly"],
+audienceSentence:"Authors who need publishing or promotion assistance or guidance",
+services:["Coaching (1-on-1)","Publishing consulting","Marketing/platform building","Book cover design","Formatting/production","Courses (self-paced)","Courses (live cohort-based)","Membership/community","Workshops/bootcamps","Speaking/teaching"],
+products:["Templates/workbooks","Online courses"],pricingTier:"Entry level (under $500)",
+topOffers:"Ebook & Paperback Cover Design ($150-200) + Interior Formatting ($100-150)",
+challenge2026:"Growing email list",
+lookingFor:["List swap partners","Group promo partners","Client referrals","Co-creation partners","Webinar co-hosts"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker","List swaps","Group promos","Client referrals","Co-creation","Webinar co-host"],
+referralsAccepting:"",affiliatesSeeking:"",podcastSpeaking:"",listSize:"",socialHandles:"",
+guestTeachTopics:"Social Media Basics: Why size and format matters; The Power of Brand Consistency; Publishing 101: KDP, IS, D2D; Finding ARC Readers: 5 Strategies; Launch Marketing Strategies",
+referOutClients:"Seeking editors and proofreaders/book coaches to help indie authors on a budget",anythingElse:""},
+{id:5,name:"Janelle Hardy",website:"https://www.janellehardy.com",email:"jaha@janellehardy.com",
+publicBio:"",
+bio:"Writer, somatic healer, and master craftswoman of embodied story. Creator of The Art of Personal Mythmaking - a body-centric memoir-writing course weaving trauma healing and creative process. Certified in Somatic Experiencing and Structural Integration with 17+ years in healing arts.",
+audienceTypes:["Nonfiction writers","Memoir"],experienceLevels:["All levels"],
+fictionGenres:[],nonfictionCategories:["Memoir/Personal Narrative","Self-help/Personal Development","Health/Wellness","Creative Nonfiction"],
+audienceSentence:"Creative sensitive women who want to write their memoir with trauma-trained somatic healing support",
+services:["Coaching (1-on-1)","Group coaching/masterminds","Courses (self-paced)","Courses (live cohort-based)","Workshops/bootcamps","Speaking/teaching"],
+products:["Online courses"],pricingTier:"Mix of price points",
+topOffers:"The Art of Personal Mythmaking (self-directed: $2,600; live 6-month: $4,600) + two free annual summits with paid All Access Pass upgrade ($85)",
+challenge2026:"Increase revenue and list size",
+lookingFor:["Affiliates","Event speakers","Client referrals","Webinar co-hosts","Podcast opportunities"],
+canProvide:["Podcast guest","Guest teacher","Summit speaker","Webinar co-host"],
+referralsAccepting:"Memoir-writers who want trauma-healing support",
+affiliatesSeeking:"Affiliates for two online summits (Healing Through Writing Festival; Dirty Messy Alive) and The Art of Personal Mythmaking course",
+podcastSpeaking:"",listSize:"",socialHandles:"Instagram: @janellemackinnonhardy",
+guestTeachTopics:"Shifting Resistance and Writer's Block Using Your Body; Outline Your Memoir Using Fairy Tale and Myth as Your Guide",
+referOutClients:"Fiction writers and those looking for craft/editing/revision/publication guidance",anythingElse:""},
+{id:6,name:"Lewis Jorstad",website:"https://thenovelsmithy.com",email:"hello@thenovelsmithy.com",
+publicBio:"",
+bio:"Developmental editor with 8 years of experience specializing in helping debut authors navigate writing craft intuitively, especially for series. Published 7 bestselling writing guides and edited over 250 manuscripts.",
+audienceTypes:["Fiction writers"],experienceLevels:["First timers and early career (<3 books)"],
+fictionGenres:["Fantasy","Mystery/Thriller/Crime","Romance","Romantasy"],nonfictionCategories:[],
+audienceSentence:"Debut novelists ready to finally get serious and get published",
+services:["Developmental editing","Group coaching/masterminds","Manuscript critique","Courses (self-paced)","Courses (live cohort-based)","Membership/community","Workshops/bootcamps","Speaking/teaching"],
+products:["Books (about writing/publishing)","Templates/workbooks","Online courses"],pricingTier:"Mid-tier ($500-$2,000)",
+topOffers:"Cohort-based outlining course ($997) + book coaching membership ($179/month)",
+challenge2026:"Systemizing my business and building internal infrastructure",
+lookingFor:["Affiliates","Event speakers","List swap partners"],
+canProvide:["Podcast guest","Guest teacher","Summit speaker","List swaps"],
+referralsAccepting:"",affiliatesSeeking:"$997 outlining course - 30% commission",podcastSpeaking:"",listSize:"5,001-10,000",socialHandles:"",
+guestTeachTopics:"Outlining a novel intuitively (for writers who struggle with traditional outlines); Decoding your genre to write a novel that earns lasting superfans; Writing opening scenes that hook readers in the first five pages",
+referOutClients:"Seeking line editors to send clients to after dev edits",anythingElse:""},
+{id:7,name:"Natasha C. Sass",website:"https://www.natashacsass.com",email:"natashacsass@gmail.com",
+publicBio:"",
+bio:"Cozy mystery writer and coach. I teach online standalone courses on outlining and structure for cozy mysteries, business systems, and AI prompting for brainstorming, writing, and business tasks. Author of a top-selling nonfiction book on cozy mystery.",
+audienceTypes:["Fiction writers"],experienceLevels:["First timers and early career (<3 books)","Experienced authors (3+ books)"],
+fictionGenres:["Mystery/Thriller/Crime"],nonfictionCategories:[],
+audienceSentence:"Cozy mystery authors who want to streamline their process and produce books more easily",
+services:["Group coaching/masterminds","Courses (self-paced)","Courses (live cohort-based)","Workshops/bootcamps","Speaking/teaching"],
+products:["Books (about writing/publishing)","Templates/workbooks","Online courses"],pricingTier:"Entry level (under $500)",
+topOffers:"Mastering AI for Cozy Mystery Authors ($397) + Cozy Mystery Novel Workshop in 5 Weeks ($297)",
+challenge2026:"Delegating, learning ConvertKit funnels and tagging, and improving marketing consistency",
+lookingFor:["Affiliates","Guest teachers","List swap partners","Tech help"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker","List swaps","Group promos","Client referrals","Co-creation","Webinar co-host"],
+referralsAccepting:"",affiliatesSeeking:"$397 AI course or $297 Cozy Mystery course - 30% commission",podcastSpeaking:"",listSize:"2,001-5,000",socialHandles:"",
+guestTeachTopics:"How to outline and write a cozy mystery novel in 5 weeks; Outlining, Universal Fantasy, tropes, character roles, series arcs",
+referOutClients:"Students seeking marketing and editing support",anythingElse:"Expert in Cozy Mystery genre and AI prompting for various models."},
+{id:8,name:"Mia Botha",website:"https://deadlinesforwriters.com",email:"write@deadlinesforwriters.com",
+publicBio:"",
+bio:"Founder of Deadlines for Writers. I host writing challenges where writers meet daily, weekly, and monthly deadlines to write short stories, poems, and novels. For writers who need to outsource their discipline.",
+audienceTypes:["Fiction writers","Poetry","Multiple formats"],experienceLevels:["All levels"],
+fictionGenres:["Action/Adventure","Fantasy","Historical fiction","Horror","Literary fiction","Science fiction","Mystery/Thriller/Crime","Romance","Romantasy","Women's fiction"],
+nonfictionCategories:["Memoir/Personal Narrative","Creative Nonfiction"],
+audienceSentence:"Writers who need to outsource their discipline",
+services:["Developmental editing","Coaching (1-on-1)","Group coaching/masterminds","Manuscript critique","Courses (self-paced)","Membership/community","Workshops/bootcamps","Speaking/teaching"],
+products:["Templates/workbooks"],pricingTier:"Entry level (under $500)",
+topOffers:"52 Scenes in 52 Weeks + 30 Days of Plotting",
+challenge2026:"Growing email list",lookingFor:["Webinar co-hosts"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker","Webinar co-host"],
+referralsAccepting:"",affiliatesSeeking:"",podcastSpeaking:"",listSize:"5,001-10,000",socialHandles:"Instagram: @deadlinesforwriters",
+guestTeachTopics:"Using deadlines; overcoming procrastination and perfectionism; craft",
+referOutClients:"Publication support",anythingElse:""},
+{id:9,name:"Monica Hay",website:"https://monicahay.com",email:"coaching@monicahay.com",
+publicBio:"",
+bio:"Writing coach who helps writers overcome resistance, perfectionism, and procrastination so they can actually finish their books. Background in publishing, social work, and creative recovery. Creator of the Writing Buddy & CP Matchmaking Program.",
+audienceTypes:["Fiction writers","Nonfiction writers","Screenwriters","Poetry","Multiple formats"],
+experienceLevels:["Aspiring author","First timers and early career (<3 books)","Experienced authors (3+ books)","All levels"],
+fictionGenres:["Action/Adventure","Fantasy","Historical fiction","Horror","Literary fiction","Science fiction","Mystery/Thriller/Crime","Romance","Romantasy","Women's fiction"],
+nonfictionCategories:["Memoir/Personal Narrative","Business/Leadership","Self-help/Personal Development","Health/Wellness","Creative Nonfiction","How-to/Instructional","Academic/Scholarly"],
+audienceSentence:"Writers who want to write messy drafts, reconnect with joy, and find a writing buddy or critique partner",
+services:["Coaching (1-on-1)","Group coaching/masterminds","Courses (self-paced)","Courses (live cohort-based)","Membership/community","Workshops/bootcamps","Speaking/teaching"],
+products:["Online courses"],pricingTier:"Mix of price points",
+topOffers:"Matchmaking Program + Writer's Way Membership ($247 for 3 months or $347 for 6 months); 1:1 coaching ($1,497+); Ignite Your Writing Magic self-paced courses ($397-597)",
+challenge2026:"Building the matchmaking program, growing email list, starting a podcast, shifting membership platform",
+lookingFor:["Affiliates","Podcast guests","Guest teachers","Event speakers","Client referrals","Co-creation partners","Strategic advice","Tech help"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker","List swaps","Client referrals","Co-creation","Webinar co-host"],
+referralsAccepting:"Writing Buddy/CP matching; 1:1 coaching for writers with resistance or ADHD; writers who want a writing community/membership",
+affiliatesSeeking:"Considering affiliates for matchmaking program - 30% commission on $197-397 product",
+podcastSpeaking:"Starting podcast 'No Mess, No Magic' in 2026. Looking for guests on creativity, resistance, perfectionism, ADHD and writing, sustainable habits, community care, intuitive tools. NOT: rigid craft formulas or rigid outlining systems.",
+listSize:"5,001-10,000",socialHandles:"Instagram: @monicahayauthor; Substack: monicahay.substack.com",
+guestTeachTopics:"How to overcome creative resistance (brain science) and finish your draft; How to write messy drafts without spiraling into perfectionism; Self-compassion in the creative process; Overcoming perfectionism with the growth mindset; Building sustainable writing habits with ADHD",
+referOutClients:"Seeking book marketers and proofreaders",anythingElse:"2026 is all about building the matchmaking program. If you have clients who want a CP or writing partner, Monica is your go-to."},
+{id:10,name:"Linda Ulleseit",website:"https://ulleseit.com",email:"ulleseitlinda@gmail.com",
+publicBio:"",
+bio:"Historical fiction author with several published books. Member of Paper Lantern Writers - a group of historical fiction authors who speak and run interactive workshops on writing historical fiction at conferences, book clubs, and meetings.",
+audienceTypes:["Fiction writers"],experienceLevels:["Aspiring author","First timers and early career (<3 books)","Experienced authors (3+ books)","All levels"],
+fictionGenres:["Historical fiction"],nonfictionCategories:["How-to/Instructional"],
+audienceSentence:"Historical fiction authors looking to improve their craft",
+services:["Courses (self-paced)","Courses (live cohort-based)","Workshops/bootcamps","Speaking/teaching"],
+products:["Books (about writing/publishing)","Online courses"],pricingTier:"Entry level (under $500)",
+topOffers:"Researching Your Novel ($55) + Fictionalizing Your Family ($85)",
+challenge2026:"Monetizing the programs I offer",lookingFor:["Affiliates"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker","Group promos","Co-creation","Webinar co-host"],
+referralsAccepting:"",affiliatesSeeking:"",podcastSpeaking:"",listSize:"501-2,000",socialHandles:"Facebook: facebook.com/linda.ulleseit; Instagram: @lulleseit",
+guestTeachTopics:"Fictionalizing Your Family; Digging Into Your Historical World; Researching Your Novel; Writing Fantasy into History",
+referOutClients:"",anythingElse:""},
+{id:11,name:"Shelby Leigh",website:"https://marketingbyshelby.com",email:"hello@shelbyleigh.co",
+publicBio:"",
+bio:"Marketing coach for authors and creatives, bestselling author, with 10+ years in marketing and branding. I help authors of all genres build a strong brand, grow their community online, and make book sales through social media, email marketing, podcasting, and more.",
+audienceTypes:["Fiction writers","Nonfiction writers","Poetry","Multiple formats"],
+experienceLevels:["Aspiring author","First timers and early career (<3 books)","Experienced authors (3+ books)","All levels"],
+fictionGenres:["Action/Adventure","Fantasy","Historical fiction","Horror","Literary fiction","Science fiction","Mystery/Thriller/Crime","Romance","Romantasy","Women's fiction"],
+nonfictionCategories:["Memoir/Personal Narrative","Business/Leadership","Self-help/Personal Development","Health/Wellness","Creative Nonfiction","How-to/Instructional"],
+audienceSentence:"Authors of all genres (self-pub and trad pub) who want to get better at marketing their books online",
+services:["Marketing/platform building","Courses (self-paced)","Courses (live cohort-based)","Membership/community","Workshops/bootcamps","Speaking/teaching"],
+products:["Templates/workbooks","Online courses"],pricingTier:"Entry level (under $500)",
+topOffers:"Creative's Content Club ($37/month - monthly templates, trainings, masterclasses) + Self-paced courses ($37+) on launching, email marketing, TikTok, Instagram",
+challenge2026:"Organizing/launching first summit in 2026, launching a higher-ticket program",
+lookingFor:["Affiliates","Event speakers","List swap partners"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker"],
+referralsAccepting:"",
+affiliatesSeeking:"Always: $37 courses (40% commission); Several times a year: Creative's Content Club (40% recurring); Likely in 2026: first marketing summit.",
+podcastSpeaking:"Looking for speakers for potential 2026 marketing summit (details TBD)",listSize:"5,001-10,000",socialHandles:"Instagram: @marketingbyshelby; YouTube: Marketing by Shelby",
+guestTeachTopics:"Simplified Social: 3 Pillars to Grow Your Audience, Build Community, and Make Sales; Branding for authors: creating and building an author platform; Email marketing for authors: what to say to build engagement and make sales",
+referOutClients:"",anythingElse:"Affiliate signup available - share courses anytime, not just during launches."},
+{id:12,name:"Sabrina Estudillo Butler",website:"https://www.unpolishedwords.com",email:"sabrina@unpolishedwords.com",
+publicBio:"",
+bio:"Book coach and editor who helps writers of color (and allies) go from book idea to actual book. I offer a monthly coaching retainer, editing services, and host the Unpolished Writers Club - a BIPOC-majority writing group (online membership).",
+audienceTypes:["Fiction writers","Nonfiction writers"],experienceLevels:["All levels"],
+fictionGenres:["Horror","Literary fiction","Romance","Women's fiction"],
+nonfictionCategories:["Memoir/Personal Narrative","Business/Leadership","Self-help/Personal Development","Creative Nonfiction"],
+audienceSentence:"BIPOC authors who are experts in their fields but new to writing books and want to traditionally publish",
+services:["Line/copy editing","Coaching (1-on-1)","Manuscript critique"],products:[],pricingTier:"Premium ($2,000-$5,000)",
+topOffers:"High-touch 1:1 coaching ($3,750) + lower-touch 1:1 coaching ($1,800)",
+challenge2026:"Growing membership",
+lookingFor:["Event speakers","Client referrals","Strategic advice"],
+canProvide:["Promote your offers","Summit speaker","Client referrals"],
+referralsAccepting:"Always accepting referrals for 1:1 book coaching (nonfiction + horror, women's fic, literary fic, romance)",
+affiliatesSeeking:"",podcastSpeaking:"",listSize:"2,001-5,000",socialHandles:"Instagram + Threads: @unpolished.words; LinkedIn: linkedin.com/in/sabrinaestudillobutler/",
+guestTeachTopics:"How to tackle revision without getting overwhelmed; Client onboarding 101 for editors",
+referOutClients:"Seeking book marketers for clients with finished projects",anythingElse:""},
+{id:13,name:"April Gardner",website:"https://www.writestartfictionstudio.com",email:"info@writestartfictionstudio.com",
+publicBio:"",
+bio:"Certified editor and book coach with 20+ published books in 5 genres. I specialize in Christian fiction and work with new authors of Christian or Clean Fiction.",
+audienceTypes:["Fiction writers"],experienceLevels:["Aspiring author","First timers and early career (<3 books)"],
+fictionGenres:["Fantasy","Historical fiction","Romance","Romantasy","Religious/Christian fiction"],nonfictionCategories:[],
+audienceSentence:"New authors of Christian or Clean Fiction",
+services:["Developmental editing","Line/copy editing","Coaching (1-on-1)","Manuscript critique","Publishing consulting","Speaking/teaching"],
+products:["Books (about writing/publishing)"],pricingTier:"Mid-tier ($500-$2,000)",
+topOffers:"Various editing and coaching packages ($300+)",
+challenge2026:"Creating an online course",lookingFor:["Affiliates","List swap partners","Group promo partners"],
+canProvide:["Promote your offers","List swaps","Group promos"],
+referralsAccepting:"",affiliatesSeeking:"",podcastSpeaking:"",listSize:"1-500",socialHandles:"LinkedIn: linkedin.com/in/april-gardner/",
+guestTeachTopics:"The Three Publishing Paths and Which Is Right for You; Layered Reaction Blocks: The Five-Beat System for Deep POV Reactions",
+referOutClients:"",anythingElse:""},
+{id:14,name:"Sarah Elisabeth Sawyer",website:"https://www.fictioncourses.com",email:"hello@fictioncourses.com",
+publicBio:"",
+bio:"Author and writing instructor. As a tribal member of the Choctaw Nation of Oklahoma, my signature course equips authors to write authentic stories that honor Native American history and culture. My Fictation course takes authors through mastering dictation to write fiction faster.",
+audienceTypes:["Fiction writers"],experienceLevels:["All levels"],
+fictionGenres:["Action/Adventure","Fantasy","Historical fiction","Horror","Literary fiction","Science fiction","Mystery/Thriller/Crime","Romance","Romantasy","Women's fiction"],nonfictionCategories:[],
+audienceSentence:"Authors including Native Americans in their stories, or who want to master dictation",
+services:["Group coaching/masterminds","Courses (self-paced)","Courses (live cohort-based)","Membership/community","Workshops/bootcamps","Speaking/teaching"],
+products:["Online courses","Paid newsletter/Substack"],pricingTier:"Entry level (under $500)",topOffers:"",
+challenge2026:"Scaling (paid ads, systems, audience growth)",
+lookingFor:["Affiliates","List swap partners","Group promo partners","Webinar co-hosts","Strategic advice","Tech help"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker","List swaps","Group promos"],
+referralsAccepting:"",affiliatesSeeking:"Fictation Digital Course and Fiction Writing: American Indians - 40% commission",podcastSpeaking:"",listSize:"5,001-10,000",
+socialHandles:"Facebook: facebook.com/fictioncourses; Instagram: @fictioncourses; Substack: fictioncourses.substack.com",
+guestTeachTopics:"How to dictate your fiction; How to accurately and respectfully include Native American characters in your fiction",
+referOutClients:"",anythingElse:""},
+{id:15,name:"Laura Jevtich",website:"https://LauraJevtich.com",email:"ljevtich@gmail.com",
+publicBio:"",
+bio:"Nonfiction author and systems creator. I help people organize their life - their stuff, their time, their digital assets, and their money - through timely systems and goal-setting methods. Also working on writing both a nonfiction and fiction book in 2026.",
+audienceTypes:["Multiple formats"],experienceLevels:["All levels"],fictionGenres:[],nonfictionCategories:["How-to/Instructional"],
+audienceSentence:"People who need help setting goals and organizing their life",
+services:["Coaching (1-on-1)","Group coaching/masterminds","Formatting/production","Membership/community","Speaking/teaching"],
+products:["Templates/workbooks"],pricingTier:"Entry level (under $500)",
+topOffers:"One-on-one help ($25/hour) + workbook to go with free class ($20)",
+challenge2026:"Publish a nonfiction book and fiction book; make PLOW'G Method class a reality for clients",
+lookingFor:["Accountability partners","Tech help"],
+canProvide:["Podcast guest","Guest teacher","Summit speaker","Co-creation","Webinar co-host"],
+referralsAccepting:"",affiliatesSeeking:"",podcastSpeaking:"",listSize:"1-500",socialHandles:"Facebook: Laura.Jevtich; Instagram: @LauraJevtichAuthor; YouTube: @LauraJevtichAuthor",
+guestTeachTopics:"Managing your time while enjoying life",
+referOutClients:"Not sure yet",anythingElse:"Traveling this summer, so available mainly in winter, spring, and fall of 2026."},
+{id:16,name:"Megan Fuentes",website:"https://fuentespens.ink",email:"megan@fuentespens.ink",
+publicBio:"",
+bio:"Story coach specializing in helping writers discover, shape, and strengthen character arcs at any point before, during, or after the initial draft. Has worked with authors from several genres, including Amazon and USA TODAY bestselling authors.",
+audienceTypes:["Fiction writers"],experienceLevels:["Aspiring author","First timers and early career (<3 books)","Experienced authors (3+ books)","All levels"],
+fictionGenres:["Action/Adventure","Fantasy","Historical fiction","Literary fiction","Science fiction","Mystery/Thriller/Crime","Romance","Romantasy","Women's fiction"],nonfictionCategories:[],
+audienceSentence:"Romance authors who have written one book but are struggling to replicate that success",
+services:["Coaching (1-on-1)","Workshops/bootcamps","Speaking/teaching"],
+products:["Templates/workbooks","Online courses"],pricingTier:"Entry level (under $500)",
+topOffers:"2-hour 1-on-1 story coaching session with character arc notes ($229) + The Romantic Plotting Workbook ($4.99)",
+challenge2026:"Growing audience and converting",
+lookingFor:["Affiliates","Group promo partners","Client referrals","Strategic advice"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker","List swaps","Group promos","Client referrals","Co-creation","Webinar co-host"],
+referralsAccepting:"Always accepting referrals for 1-on-1 story coaching. Best used when a writer feels stuck or is between drafts.",
+affiliatesSeeking:"$229 story coaching sessions - 10% commission",podcastSpeaking:"",listSize:"501-2,000",
+socialHandles:"Instagram: @fuentespens; Threads: @fuentespens; Facebook: facebook.com/mfuentesauthor",
+guestTeachTopics:"How to create romances on the page that readers root for; How to find and refine your character arcs; How to make the drafting experience more joyful",
+referOutClients:"",anythingElse:"Open to feedback!"},
+{id:17,name:"Lysa Pond",website:"https://www.lpondbookcoach.com",email:"lpond.bookcoach@gmail.com",
+publicBio:"",
+bio:"Certified book coach and author specializing in romance and cozy mystery genres at all levels. I also support authors with book launches, newsletter promotions and swaps, and VA/PA services designed for the writing community.",
+audienceTypes:["Fiction writers"],experienceLevels:["All levels"],
+fictionGenres:["Mystery/Thriller/Crime","Romance","Romantasy"],nonfictionCategories:[],
+audienceSentence:"Romance and Cozy Mystery (with a sprinkle of Romantasy) authors at all levels",
+services:["Coaching (1-on-1)","Beta reading","Manuscript critique","Marketing/platform building"],
+products:["Templates/workbooks"],pricingTier:"Mix of price points",
+topOffers:"1:1 coaching ($127/hour) or annual package ($15,000/year)",
+challenge2026:"Grow customer base",lookingFor:["Client referrals","Accountability partners","Strategic advice"],
+canProvide:["Promote your offers","Client referrals"],
+referralsAccepting:"1:1 coaching primarily in romance and cozy mystery (and some romantasy)",
+affiliatesSeeking:"",podcastSpeaking:"",listSize:"1-500",socialHandles:"",
+guestTeachTopics:"Outlining Romance and Cozy Mystery Novels; 4 Act Story Structure; Scene Structure",
+referOutClients:"Dev editors, ad management, additional coaching (when at capacity)",anythingElse:""},
+{id:18,name:"Rebecca Pickens",website:"https://rebeccapickens.com",email:"rebecca@rebeccapickens.com",
+publicBio:"",
+bio:"Developmental editor, certified book coach, and host of Self-Editing Essentials - a group coaching program for fiction and memoir writers who have finished (or nearly finished) their manuscripts and are ready to learn the art of self-editing.",
+audienceTypes:["Fiction writers","Nonfiction writers","Memoir and short stories"],experienceLevels:["All levels"],
+fictionGenres:["Literary fiction","Mystery/Thriller/Crime","Women's fiction"],
+nonfictionCategories:["Memoir/Personal Narrative","Self-help/Personal Development","Creative Nonfiction"],
+audienceSentence:"Fiction and memoir writers seeking guidance to refine, restructure, and strengthen completed or nearly completed drafts",
+services:["Developmental editing","Line/copy editing","Coaching (1-on-1)","Group coaching/masterminds","Query letter review","Manuscript critique","Courses (self-paced)","Courses (live cohort-based)","Membership/community","Workshops/bootcamps","Speaking/teaching"],
+products:["Online courses"],pricingTier:"Entry level (under $500)",
+topOffers:"High-touch 1:1 coaching ($600) + Self-Editing Essentials group coaching ($175/month)",
+challenge2026:"Growing the group coaching program so it becomes my primary focus",
+lookingFor:["Affiliates","List swap partners","Group promo partners","Client referrals","Webinar co-hosts"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker","List swaps","Group promos","Client referrals","Co-creation","Webinar co-host"],
+referralsAccepting:"Dev editing for literary fiction, upmarket fiction, and memoir. Referrals for 1:1 coaching and Self-Editing Essentials group program.",
+affiliatesSeeking:"$175/month group coaching program - $175 commission",podcastSpeaking:"",listSize:"501-2,000",socialHandles:"YouTube: @RebeccaBookCoach",
+guestTeachTopics:"Finding & Fine Tuning Your Character's Voice; How to Write and Revise Compelling Flashback and Back Story; World Building: Not Just for Fantasy Writers; How to Balance Showing and Telling; How Mentor Texts Can Help You Write Your Book",
+referOutClients:"Hybrid Press Owners, Book Formatters, Cover Designers, Self-Publishing Experts, Book Coaches for Fantasy Writers",anythingElse:""},
+{id:19,name:"Rhonda Douglas",website:"https://resilientwriters.com",email:"rhonda@resilientwriters.com",
+publicBio:"",
+bio:"Award-winning author, host of The Resilient Writers Radio Show, and creator of the First Book Finish program. MFA in Creative Writing (2011). Based in Ottawa, Canada. Works with writers who've started a book but struggled to finish on their own.",
+audienceTypes:["Fiction writers","Nonfiction writers","Poetry","Multiple formats"],
+experienceLevels:["Aspiring author","First timers and early career (<3 books)"],
+fictionGenres:["Action/Adventure","Fantasy","Historical fiction","Horror","Literary fiction","Science fiction","Mystery/Thriller/Crime","Romance","Romantasy","Women's fiction"],
+nonfictionCategories:["Memoir/Personal Narrative","Creative Nonfiction"],
+audienceSentence:"Writers who've started a book but struggled to finish on their own",
+services:["Developmental editing","Coaching (1-on-1)","Group coaching/masterminds","Query letter review","Manuscript critique","Marketing/platform building","Courses (live cohort-based)","Workshops/bootcamps"],
+products:["Online courses"],pricingTier:"Mix of price points",
+topOffers:"First Book Finish: 3 tiers at $1,297, $1,997, and $4,997",
+challenge2026:"Going evergreen with offers",
+lookingFor:["Affiliates","Podcast guests","Guest teachers","Event speakers","List swap partners","Group promo partners","Client referrals","Strategic advice","Tech help"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker","List swaps","Group promos","Client referrals","Webinar co-host"],
+referralsAccepting:"Manuscript evaluations or people for First Book Finish",
+affiliatesSeeking:"First Book Finish and Book Finishers Bootcamp",podcastSpeaking:"Happy to discuss published books on the show",listSize:"10,000+",socialHandles:"@resilientwriters",
+guestTeachTopics:"Anything craft or mindset related",
+referOutClients:"Line and copy editors",anythingElse:""},
+{id:20,name:"Stacy Juba",website:"https://www.shortcutsforwriters.com",email:"stacyjubabooks@gmail.com",
+publicBio:"",
+bio:"Fiction author, freelance developmental editor, and creator of 12+ online courses for writers. Former award-winning journalist with courses from $9-$497 on self-editing, writing craft, organization, and mindset.",
+audienceTypes:["Fiction writers","Nonfiction writers"],experienceLevels:["All levels"],
+fictionGenres:["Action/Adventure","Fantasy","Historical fiction","Horror","Literary fiction","Science fiction","Mystery/Thriller/Crime","Romance","Romantasy","Women's fiction"],
+nonfictionCategories:["Memoir/Personal Narrative","Self-help/Personal Development","Health/Wellness","Creative Nonfiction"],
+audienceSentence:"Fiction and creative nonfiction authors seeking resources to develop craft, finish professionally, and fit writing into a busy life",
+services:["Developmental editing","Line/copy editing","Courses (self-paced)","Speaking/teaching"],
+products:["Online courses"],pricingTier:"Entry level (under $500)",
+topOffers:"Book Editing Blueprint - teaches authors to think like an editor ($497) + Inside Voices - using internal dialogue to strengthen scenes ($47)",
+challenge2026:"Build list of active affiliates and cross-promotion partners",
+lookingFor:["Affiliates","Guest teachers","Event speakers","List swap partners","Client referrals"],
+canProvide:["Promote your offers","Podcast guest","Summit speaker","List swaps","Client referrals"],
+referralsAccepting:"Developmental editing for fiction and nonfiction",
+affiliatesSeeking:"All courses - 40% commission; 30% on bumps/upsells. Also launching Rewrite the Fight and Writer's Biz Crew in Feb/March 2026.",
+podcastSpeaking:"Guest blogging opportunities for educational articles on craft, marketing, mindset, and tech",listSize:"2,001-5,000",
+socialHandles:"Facebook Group: Shortcuts for Writers; Instagram: @stacy_juba; YouTube; LinkedIn; Pinterest",
+guestTeachTopics:"Biggest mistakes writers make in fiction manuscripts; How to use body language and internal dialogue to improve scenes; Organizational tips for authors; Using ChatGPT for planning and marketing",
+referOutClients:"Interested in copyeditors, proofreaders, or books for young children",
+anythingElse:"Interested in partnering? Join affiliate program and/or schedule a call. Can share courses anytime with affiliate link."},
+{id:21,name:"Emily Golden",website:"https://goldenmayediting.com",email:"emily@goldenmayediting.com",
+publicBio:"",
+bio:"1:1 book coach, developmental editor, and host of the Tenacious Writing online program since 2019. I specialize in helping writers make craft and process work for their unique brains, lives, and preferences so they can build a sustainable, successful writing life. Adult fantasy writer.",
+audienceTypes:["Fiction writers"],experienceLevels:["All levels"],
+fictionGenres:["Action/Adventure","Fantasy","Historical fiction","Science fiction","Mystery/Thriller/Crime","Romance","Romantasy","Women's fiction"],nonfictionCategories:[],
+audienceSentence:"Fiction writers who want to build a sustainable, fulfilling writing life that works for them",
+services:["Developmental editing","Coaching (1-on-1)","Manuscript critique","Courses (self-paced)","Membership/community","Workshops/bootcamps","Speaking/teaching"],
+products:["Online courses"],pricingTier:"Mix of price points",
+topOffers:"Tenacious Writing Program ($2,000 lifetime) + Story Magic Coaching ($1,500/month) + Workshops ($99 each)",
+challenge2026:"Growing email list to grow Tenacious Writing membership sales",
+lookingFor:["Affiliates","Podcast guests","List swap partners","Strategic advice"],
+canProvide:["Podcast guest","Guest teacher","Summit speaker","List swaps","Client referrals"],
+referralsAccepting:"Interest in online membership program with craft, mindset, and community resources",
+affiliatesSeeking:"Tenacious Writing program - $2,000 lifetime fee, 10% commission",
+podcastSpeaking:"Looking for guests who can speak to any writing (craft, mindset, or process) topic that excites them",listSize:"2,001-5,000",
+socialHandles:"Instagram: @tenaciouswriting and @ebgoldenbooks",
+guestTeachTopics:"The 3 layers of show, don't tell; Painting pictures with prose; The structure of how characters change; Perfectionism and fear/shame/failure; How to grow a thick writer skin; Setting realistic goals and having fun meeting them",
+referOutClients:"Literary fiction and horror coaches/editors, nonfiction coaches/editors, marketing support, line/copy editors",anythingElse:""},
+{id:22,name:"Nat Connors",website:"https://kindletrends.com",email:"nat@kindletrends.com",
+publicBio:"",
+bio:"Small-town romantic comedy writer, former cancer researcher, and creator of the Kindletrends data-driven newsletter for genre fiction authors. He produces weekly and monthly data about trends on the Amazon Kindle Store to help working authors make informed decisions.",
+audienceTypes:["Fiction writers"],experienceLevels:["First timers and early career (<3 books)","Experienced authors (3+ books)"],
+fictionGenres:["Action/Adventure","Fantasy","Historical fiction","Science fiction","Mystery/Thriller/Crime","Romance","Romantasy","Women's fiction"],nonfictionCategories:[],
+audienceSentence:"Working genre fiction authors for whom writing is part-time or full-time income",
+services:["Market research / Kindle trend data (Kindletrends newsletter)"],products:["Paid newsletter/Substack"],pricingTier:"Entry level (under $500)",
+topOffers:"Kindletrends newsletter subscription ($15/month) - weekly and monthly data about Kindle Store activity",
+challenge2026:"Forming collaborations with other author service providers",
+lookingFor:["Input about how members can benefit from Kindletrends data"],
+canProvide:["Podcast guest","Guest teacher","Summit speaker","Webinar co-host"],
+referralsAccepting:"",affiliatesSeeking:"",podcastSpeaking:"",listSize:"",socialHandles:"",
+guestTeachTopics:"Research techniques for genre fiction markets; Current trends in specific genres (content, blurbs, titles, covers)",
+referOutClients:"",anythingElse:""},
+{id:23,name:"Miranda Darrow",website:"https://www.mirandadarrow.com",email:"miranda@mirandadarrow.com",
+publicBio:"",
+bio:"Freelance fiction editor and volunteer with the RevPit online manuscript revision event and community. Also a practicing attorney - editing is my passion project and hopefully my retirement job in a decade.",
+audienceTypes:["Fiction writers"],experienceLevels:["All levels"],
+fictionGenres:["Action/Adventure","Fantasy","Historical fiction","Science fiction","Mystery/Thriller/Crime","Romance","Romantasy","Women's fiction"],
+nonfictionCategories:["Memoir/Personal Narrative","Creative Nonfiction"],
+audienceSentence:"Newer fiction authors looking for someone who can teach them writing craft skills",
+services:["Developmental editing","Line/copy editing","Coaching (1-on-1)","Group coaching/masterminds","Query letter review","Manuscript critique","Courses (self-paced)","Courses (live cohort-based)","Speaking/teaching"],
+products:["Books (about writing/publishing)","Online courses"],pricingTier:"Entry level (under $500)",
+topOffers:"Self-paced class on revising your novel ($149) + class on adding a romantic subplot to any genre novel ($79)",
+challenge2026:"Growing email list and systemizing business",
+lookingFor:["Affiliates","Event speakers","Group promo partners","Client referrals","Co-creation partners"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker","List swaps","Group promos","Client referrals","Co-creation","Webinar co-host"],
+referralsAccepting:"Seeking developmental editing for most fiction genres and book coaching services",
+affiliatesSeeking:"$149 novel revision course and $79 romantic subplot course - both 40% commission via Thinkific",
+podcastSpeaking:"Posts YouTube videos with deep dives of specific novels as craft demonstrations. Looking for collaborators on book discussions in early 2026.",
+listSize:"501-2,000",socialHandles:"YouTube: @mirandadarrow3994; Instagram: @miranda.darrow; Bluesky: miranda-darrow.bsky.social; Threads: @miranda.darrow",
+guestTeachTopics:"Opening pages - grounding readers without info-dumping; Query package essentials; Adding a romantic subplot to any genre; Developmental editing overview and author checklist; Worldbuilding for any genre with Deep POV",
+referOutClients:"Seeking book formatters for new indie author clients",anythingElse:""},
+{id:24,name:"Bailey Lang",website:"https://www.usethewritingdesk.com",email:"bailey@usethewritingdesk.com",
+publicBio:"",
+bio:"Book coach and developmental editor helping authors build sustainable, magical writing practices - from draft to done. PhD in rhetoric and writing studies, nearly two decades of experience. Primarily nonfiction/business and academic books, with some genre fiction (SFF, romance).",
+audienceTypes:["Fiction writers","Nonfiction writers"],experienceLevels:["All levels"],
+fictionGenres:["Fantasy","Science fiction","Romance"],
+nonfictionCategories:["Memoir/Personal Narrative","Business/Leadership","Self-help/Personal Development","Academic/Scholarly"],
+audienceSentence:"Visionary nonfiction authors writing books that will make a difference in the world",
+services:["Developmental editing","Coaching (1-on-1)","Manuscript critique","Workshops/bootcamps","Speaking/teaching"],
+products:[],pricingTier:"Premium ($2,000-$5,000)",
+topOffers:"High-touch 1:1 book coaching (3-month packages): $3,600 + Manuscript review/dev edit: starts at $3,500",
+challenge2026:"Growing email list; offering more teaching/workshops in other people's communities",
+lookingFor:["List swap partners","Client referrals","Co-creation partners","Webinar co-hosts","Accountability partners"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker","List swaps","Group promos","Client referrals","Co-creation","Webinar co-host"],
+referralsAccepting:"Always accepting manuscript review projects. Coaching waitlist always open (accepts new coaching clients 4x/year).",
+affiliatesSeeking:"$97 workshop on habits of mind for authors - 50% commission (January 2026)",
+podcastSpeaking:"Looking for published writers to interview for newsletter",listSize:"501-2,000",socialHandles:"LinkedIn: linkedin.com/in/bailey-lang/",
+guestTeachTopics:"8 essential habits of mind for writers; How to build a sustainable writing practice; Your First Draft is Magic; Writing Without Creative Shame",
+referOutClients:"Would love to connect with line/copy editors, book designers, book marketers, and self-publishing project managers",anythingElse:""},
+{id:25,name:"Beth Barany",website:"https://bethbarany.com",email:"bethbarany@gmail.com",
+publicBio:"",
+bio:"Award-winning sci-fi/fantasy novelist, coach, and consultant for authors for 20+ years. Taught hundreds through online school and in-person events. Host of podcast 'How To Write The Future.' Collaborates 1-on-1 and in groups with writers going from idea to published book.",
+audienceTypes:["Fiction writers","Multiple formats"],experienceLevels:["Aspiring author"],
+fictionGenres:["Action/Adventure","Fantasy","Science fiction","Mystery/Thriller/Crime","Romance","Romantasy"],nonfictionCategories:[],
+audienceSentence:"Science fiction and fantasy authors (also works with aspiring author service providers)",
+services:["Developmental editing","Coaching (1-on-1)","Group coaching/masterminds","Publishing consulting","Marketing/platform building","Courses (self-paced)","Courses (live cohort-based)","Membership/community","Workshops/bootcamps","Speaking/teaching"],
+products:["Books (about writing/publishing)","Online courses"],pricingTier:"Premium ($2,000-$5,000)",
+topOffers:"12-month small group live mastermind for sci-fi/fantasy authors editing first novel ($4,970) + High-touch 1:1 coaching ($2,400)",
+challenge2026:"Bring in more 1:1 clients and small group coaching participants",
+lookingFor:["Affiliates","Podcast guests","List swap partners","Group promo partners","Client referrals","Accountability partners","Strategic advice"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker","List swaps","Group promos","Client referrals"],
+referralsAccepting:"Always accepting referrals for 1:1 high-ticket dev edit + teaching program + writing coaching for sci-fi/fantasy writers",
+affiliatesSeeking:"Upcoming Creative Entrepreneur bootcamp for writers serving writers ($67)",
+podcastSpeaking:"Looking for sci-fi/fantasy writers with a positive, optimistic approach to teaching writing",listSize:"2,001-5,000",
+socialHandles:"YouTube: youtube.com/c/BethBarany; Instagram: @bethbarany; Facebook: bethbarany; Bluesky: bethbarany.bsky.social",
+guestTeachTopics:"Heart-Centered Marketing for Fiction Authors (without social media); NLP for Fiction Writers: overcoming writer's block; Settings That Hook Readers: Enhance Your Story with filmmaking tools",
+referOutClients:"Seeking manuscript analysts, developmental editors, copy editors",anythingElse:"Happy to do 1:1 Zoom networking calls."},
+{id:26,name:"Linda Ruggeri",website:"https://www.theinsightfuleditor.com",email:"linda@theinsightfuleditor.com",
+publicBio:"",
+bio:"Bilingual (English/Spanish) nonfiction author, editor, and speaker based in Napa Valley, CA. I work with cookbooks, prescriptive nonfiction, and Spanish translations. My books have won IBPA awards. Also founder of The Networking Studio, a professional community for editors.",
+audienceTypes:["Nonfiction writers"],experienceLevels:["All levels"],
+fictionGenres:[],nonfictionCategories:["Memoir/Personal Narrative","Business/Leadership","Self-help/Personal Development","Health/Wellness","How-to/Instructional"],
+audienceSentence:"Nonfiction authors building a long-term writing career and preparing for professional publication",
+services:["Developmental editing","Line/copy editing","Coaching (1-on-1)","Group coaching/masterminds","Query letter review","Proposal review","Publishing consulting","Membership/community","Speaking/teaching"],
+products:["Books (about writing/publishing)","Templates/workbooks","Online courses"],pricingTier:"Entry level (under $500)",
+topOffers:"Networking strategy course for editors ($250-500) + Paid membership for editors ($190/year) + High-touch 1:1 editorial coaching (premium, nonfiction)",
+challenge2026:"Building a repeatable system for selling a self-paced networking course; integrating email sequences with Circle community",
+lookingFor:["Event speakers","Client referrals","Accountability partners","Strategic advice","Tech help"],
+canProvide:["Promote your offers","Podcast guest","Guest teacher","Summit speaker"],
+referralsAccepting:"Always accepting nonfiction dev editing clients, Spanish works editing, and author coaching for self-pub authors",
+affiliatesSeeking:"",podcastSpeaking:"Always looking for guests who can help freelance editors learn additional skills",listSize:"1-500",
+socialHandles:"Instagram: @theinsightfuleditor; LinkedIn: linkedin.com/in/linda-ruggeri-editor/",
+guestTeachTopics:"Networking for Writers: Building Your Network in the Publishing World; Beyond the Bookshelf: Word-of-Mouth Networks as New Distribution; Conferences as a Strategic Marketing Tool; AI and the Editor: Redefining Writer-Editor Collaboration",
+referOutClients:"Would love to refer nonfiction authors to trusted book marketers, publicists, proposal consultants, literary agents, and genre writing communities",
+anythingElse:"Grateful to be part of WSW and learning from members who see writing as both a craft and a business."}
+];
+
+// ── SERVICE GROUPS ──────────────────────────────────────────────
+var SERVICE_GROUPS = [
+  { label: "Editing", key: "editing", items: [
+    { label: "Developmental Editing", match: ["Developmental editing"] },
+    { label: "Line / Copy Editing",   match: ["Line/copy editing"] },
+    { label: "Manuscript Critique",   match: ["Manuscript critique"] },
+    { label: "Beta Reading",          match: ["Beta reading"] },
+    { label: "Query / Proposal",      match: ["Query letter review","Proposal review"] }
+  ]},
+  { label: "Coaching", key: "coaching", items: [
+    { label: "1-on-1 Coaching",       match: ["Coaching (1-on-1)"] },
+    { label: "Group / Mastermind",    match: ["Group coaching/masterminds"] }
+  ]},
+  { label: "Courses & Workshops", key: "courses", items: [
+    { label: "Self-Paced Courses",    match: ["Courses (self-paced)"] },
+    { label: "Live / Cohort Courses", match: ["Courses (live cohort-based)"] },
+    { label: "Workshops",             match: ["Workshops/bootcamps"] },
+    { label: "Membership / Community",match: ["Membership/community"] }
+  ]},
+  { label: "Publishing & Marketing", key: "pubmkt", items: [
+    { label: "Marketing & Platform",  match: ["Marketing/platform building"] },
+    { label: "Publishing Consulting", match: ["Publishing consulting"] },
+    { label: "Cover Design",          match: ["Book cover design"] },
+    { label: "Formatting",            match: ["Formatting/production"] },
+    { label: "Public Relations",      match: ["Public Relations"] }
+  ]}
+];
+
+// Flatten for filter matching
+var ALL_SERVICE_FILTERS = [];
+SERVICE_GROUPS.forEach(function(g){ g.items.forEach(function(it){ ALL_SERVICE_FILTERS.push(it); }); });
+
+// ── GENRE GROUPS ─────────────────────────────────────────────────
+var FICTION_FILTERS = [
+  { label: "Romance / Romantasy",  match: ["Romance","Romantasy"] },
+  { label: "Fantasy / Sci-Fi",     match: ["Fantasy","Science fiction"] },
+  { label: "Mystery / Crime",      match: ["Mystery/Thriller/Crime"] },
+  { label: "Historical Fiction",   match: ["Historical fiction"] },
+  { label: "Literary Fiction",     match: ["Literary fiction"] },
+  { label: "Women's Fiction",      match: ["Women's fiction"] },
+  { label: "Horror",               match: ["Horror"] }
+];
+var NONFICTION_FILTERS = [
+  { label: "Memoir",               match: ["Memoir/Personal Narrative"] },
+  { label: "Business / Leadership",match: ["Business/Leadership"] },
+  { label: "Self-help",            match: ["Self-help/Personal Development"] },
+  { label: "Health & Wellness",    match: ["Health/Wellness"] },
+  { label: "Creative Nonfiction",  match: ["Creative Nonfiction"] },
+  { label: "How-to",               match: ["How-to/Instructional"] },
+  { label: "Academic",             match: ["Academic/Scholarly"] }
+];
+var ALL_GENRE_FILTERS = FICTION_FILTERS.concat(NONFICTION_FILTERS);
+
+// ── EXPERIENCE FILTERS ───────────────────────────────────────────
+var EF = [
+  { label: "Aspiring / Beginner",       match: ["Aspiring author"] },
+  { label: "Early Career (< 3 books)",  match: ["First timers and early career (<3 books)"] },
+  { label: "Experienced (3+ books)",    match: ["Experienced authors (3+ books)"] },
+  { label: "All Levels",                match: ["All levels"] }
+];
+
+// ── LOOKING-FOR FILTERS (member view) ────────────────────────────
+var LF = [
+  { label: "Affiliates",         match: ["Affiliates"] },
+  { label: "Podcast Guests",     match: ["Podcast guests"] },
+  { label: "List Swap Partners", match: ["List swap partners","swap"] },
+  { label: "Client Referrals",   match: ["Client referrals"] },
+  { label: "Webinar Co-hosts",   match: ["Webinar co-hosts"] },
+  { label: "Guest Teachers",     match: ["Guest teachers"] },
+  { label: "Event Speakers",     match: ["Event speakers"] },
+  { label: "Co-creation",        match: ["Co-creation partners"] }
+];
+
+// ── SERVICE DISPLAY GROUPS (for card rendering) ───────────────────
+var SERVICE_DISPLAY = [
+  { label: "Editing",              match: ["Developmental editing","Line/copy editing","Manuscript critique","Beta reading","Query letter review","Proposal review"] },
+  { label: "Coaching",             match: ["Coaching (1-on-1)","Group coaching/masterminds"] },
+  { label: "Courses & Workshops",  match: ["Courses (self-paced)","Courses (live cohort-based)","Workshops/bootcamps","Membership/community"] },
+  { label: "Publishing & Marketing",match:["Publishing consulting","Marketing/platform building","Book cover design","Formatting/production","Public Relations","Market research / Kindle trend data (Kindletrends newsletter)","Speaking/teaching"] }
+];
+
+// ── SEEDED RANDOM for author view ────────────────────────────────
+var SESSION_SEED = Math.floor(Math.random() * 1000000);
+function seededRand(seed){ var x=Math.sin(seed)*10000; return x-Math.floor(x); }
+function shuffleSeeded(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(seededRand(SESSION_SEED+i)*(i+1));
+    var tmp=a[i]; a[i]=a[j]; a[j]=tmp;
+  }
+  return a;
+}
+
+// ── STATE ────────────────────────────────────────────────────────
+var state = {
+  view: 'author',
+  memberUnlocked: false,
+  filters: { service: null, genre: null, experience: null, lookingFor: null },
+  search: '',
+  sort: 'default'
+};
+var PW = 'WSW2026';
+
+// ── FILTER MATCHING ──────────────────────────────────────────────
+function matchF(arr, fd){
+  if(!fd) return true;
+  return fd.match.some(function(m){
+    return arr.some(function(a){ return a.toLowerCase().indexOf(m.toLowerCase())>-1; });
+  });
+}
+
+function filterMembers(){
+  return MEMBERS.filter(function(m){
+    if(state.filters.service){
+      var fd=ALL_SERVICE_FILTERS.find(function(f){return f.label===state.filters.service;});
+      if(fd && !matchF(m.services,fd)) return false;
+    }
+    if(state.filters.genre){
+      var fd=ALL_GENRE_FILTERS.find(function(f){return f.label===state.filters.genre;});
+      if(fd && !matchF(m.fictionGenres.concat(m.nonfictionCategories),fd)) return false;
+    }
+    if(state.filters.experience){
+      var fd=EF.find(function(f){return f.label===state.filters.experience;});
+      if(fd && !matchF(m.experienceLevels,fd)) return false;
+    }
+    if(state.filters.lookingFor && state.view==='member'){
+      var fd=LF.find(function(f){return f.label===state.filters.lookingFor;});
+      if(fd && !matchF(m.lookingFor,fd)) return false;
+    }
+    if(state.search){
+      var q=state.search.toLowerCase();
+      var blob=[m.name,m.bio,m.publicBio,m.audienceSentence,m.guestTeachTopics,m.referralsAccepting]
+        .concat(m.services,m.fictionGenres,m.nonfictionCategories).join(' ').toLowerCase();
+      if(blob.indexOf(q)<0) return false;
+    }
+    return true;
+  });
+}
+
+function sortMembers(arr){
+  if(state.sort==='az') return arr.slice().sort(function(a,b){return a.name.localeCompare(b.name);});
+  if(state.sort==='za') return arr.slice().sort(function(a,b){return b.name.localeCompare(a.name);});
+  // default: alphabetical for member view, randomized per session for author view
+  if(state.view==='member') return arr.slice().sort(function(a,b){return a.name.localeCompare(b.name);});
+  return shuffleSeeded(arr);
+}
+
+function hasActiveFilters(){
+  return Object.values(state.filters).some(function(v){return v!==null;})||!!state.search;
+}
+
+// ── HELPERS ──────────────────────────────────────────────────────
+function escH(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function makeTag(t,cls){ return '<span class="tag '+cls+'">'+escH(t)+'</span>'; }
+function makeTags(arr,cls){
+  if(!arr||!arr.length) return '';
+  return '<div class="tags">'+arr.map(function(t){return makeTag(t,cls);}).join('')+'</div>';
+}
+
+function makeChip(label, key, filterObj){
+  var active = state.filters[key]===label;
+  return '<button class="chip'+(active?' active':'')+'" aria-pressed="'+(active?'true':'false')+
+    '" data-key="'+key+'" data-val="'+escH(label)+'" onclick="chipClick(this)">'+escH(label)+'</button>';
+}
+
+function chipClick(el){
+  setFilter(el.getAttribute('data-key'), el.getAttribute('data-val'));
+}
+
+function setFilter(key,val){
+  state.filters[key]=(state.filters[key]===val)?null:val;
+  renderFilters(); renderCards();
+}
+
+function clearFilters(){
+  state.filters={service:null,genre:null,experience:null,lookingFor:null};
+  state.search=''; document.getElementById('si').value='';
+  renderFilters(); renderCards();
+}
+
+function handleSearch(v){ state.search=v.trim(); renderCards(); }
+
+function setSort(s){
+  state.sort=s;
+  ['default','az','za'].forEach(function(k){
+    var btn=document.getElementById('sort-'+k);
+    btn.classList.toggle('active',k===s);
+    btn.setAttribute('aria-pressed', k===s ? 'true':'false');
+  });
+  renderCards();
+}
+
+function pxClass(t){
+  if(t.indexOf('Entry')>-1) return 'pxe';
+  if(t.indexOf('Mid')>-1)   return 'pxm';
+  if(t.indexOf('Premium')>-1) return 'pxp';
+  return 'pxx';
+}
+
+function detailRow(label,content){
+  return '<div class="dr"><div class="dl">'+label+'</div><div class="dt">'+content+'</div></div>';
+}
+
+// ── BIO ──────────────────────────────────────────────────────────
+function makeBio(m, prefix, usePublic){
+  var bioId = prefix+m.id;
+  var text = (usePublic && m.publicBio && m.publicBio.length>10) ? m.publicBio : m.bio;
+  var needsTrunc = text.length > 230;
+  var h = '<div class="bw"><div class="bio'+(needsTrunc?' bioc':'')+'" id="bio'+bioId+'">'+escH(text)+'</div>';
+  if(needsTrunc) h += '<button class="rmb" onclick="toggleBio(\''+bioId+'\')" aria-expanded="false">Read more</button>';
+  return h+'</div>';
+}
+
+function toggleBio(id){
+  var el=document.getElementById('bio'+id);
+  var btn=el ? el.nextElementSibling : null;
+  if(!el) return;
+  var expanded = !el.classList.contains('bioc');
+  if(expanded){ el.classList.add('bioc'); if(btn){btn.textContent='Read more';btn.setAttribute('aria-expanded','false');} }
+  else{ el.classList.remove('bioc'); if(btn){btn.textContent='Read less';btn.setAttribute('aria-expanded','true');} }
+}
+
+// ── SERVICE DISPLAY (grouped) ─────────────────────────────────────
+function makeServiceGroups(services){
+  if(!services||!services.length) return '';
+  var h='';
+  SERVICE_DISPLAY.forEach(function(g){
+    var matched=services.filter(function(s){
+      return g.match.some(function(m){return s.toLowerCase().indexOf(m.toLowerCase())>-1;});
+    });
+    // Clean up display labels
+    var clean=matched.map(function(s){
+      if(s==='Coaching (1-on-1)') return '1-on-1';
+      if(s==='Group coaching/masterminds') return 'Group / Mastermind';
+      if(s==='Courses (self-paced)') return 'Self-paced';
+      if(s==='Courses (live cohort-based)') return 'Live / Cohort';
+      if(s==='Workshops/bootcamps') return 'Workshops';
+      if(s==='Membership/community') return 'Membership';
+      if(s==='Marketing/platform building') return 'Marketing';
+      if(s==='Publishing consulting') return 'Publishing';
+      if(s==='Formatting/production') return 'Formatting';
+      if(s==='Book cover design') return 'Cover Design';
+      if(s==='Public Relations') return 'PR';
+      if(s==='Market research / Kindle trend data (Kindletrends newsletter)') return 'Market Research';
+      if(s==='Speaking/teaching') return 'Speaking';
+      if(s==='Developmental editing') return 'Developmental';
+      if(s==='Line/copy editing') return 'Line / Copy';
+      if(s==='Manuscript critique') return 'Manuscript Critique';
+      if(s==='Query letter review') return 'Query Review';
+      if(s==='Proposal review') return 'Proposal Review';
+      if(s==='Beta reading') return 'Beta Reading';
+      return s;
+    });
+    if(clean.length){
+      h+='<div class="service-group">';
+      h+='<div class="sg-label">'+g.label+'</div>';
+      h+='<div class="tags">'+clean.map(function(t){return makeTag(t,'ts');}).join('')+'</div>';
+      h+='</div>';
+    }
+  });
+  return h ? '<div class="cs"><div class="sl">Services</div>'+h+'</div>' : '';
+}
+
+// ── GENRE DISPLAY (split fiction/nonfiction) ──────────────────────
+function makeGenreSplit(fiction, nonfiction){
+  var hasFic = fiction && fiction.length;
+  var hasNf  = nonfiction && nonfiction.length;
+  if(!hasFic && !hasNf) return '';
+  var h='<div class="cs"><div class="sl">Genres / Categories</div><div class="genre-split">';
+  if(hasFic){
+    h+='<div class="genre-row">';
+    if(hasNf) h+='<div class="genre-row-label">Fiction</div>';
+    h+='<div class="tags">'+fiction.map(function(t){return makeTag(t,'tg');}).join('')+'</div></div>';
+  }
+  if(hasNf){
+    h+='<div class="genre-row">';
+    if(hasFic) h+='<div class="genre-row-label">Nonfiction</div>';
+    h+='<div class="tags">'+nonfiction.map(function(t){return makeTag(t,'tnf');}).join('')+'</div></div>';
+  }
+  return h+'</div></div>';
+}
+
+// ── TOGGLE DETAILS (member cards) ────────────────────────────────
+function toggleDetails(id){
+  var md=document.getElementById('md'+id);
+  var btn=document.getElementById('mdt'+id);
+  if(!md) return;
+  var open=md.style.display==='block';
+  md.style.display=open?'none':'block';
+  if(btn){ btn.textContent=open?'&#9658; More details':'&#9660; Hide details'; }
+}
+
+// ── VIEW SWITCHING ───────────────────────────────────────────────
+function switchView(v){
+  if(v==='member'&&!state.memberUnlocked){
+    var modal=document.getElementById('pmo');
+    modal.classList.remove('hidden');
+    document.getElementById('pwi').focus();
+    return;
+  }
+  state.view=v;
+  document.getElementById('tab-author').className='vtab'+(v==='author'?' active':'');
+  document.getElementById('tab-author').setAttribute('aria-selected',v==='author'?'true':'false');
+  document.getElementById('tab-member').className='vtab'+(v==='member'?' active':'');
+  document.getElementById('tab-member').setAttribute('aria-selected',v==='member'?'true':'false');
+  document.getElementById('vdesc').textContent=v==='author'
+    ?'Browse service providers who can help with your book. Use filters to find the right match by service type, genre, or experience level.'
+    :'Browse all members. Filter by what they are looking for to find partnership opportunities.';
+  state.filters={service:null,genre:null,experience:null,lookingFor:null};
+  state.sort='default';
+  document.getElementById('si').value=''; state.search='';
+  setSort('default');
+  renderFilters(); renderCards();
+}
+
+// ── PASSWORD ─────────────────────────────────────────────────────
+function checkPw(){
+  var v=document.getElementById('pwi').value;
+  if(v===PW){
+    state.memberUnlocked=true;
+    document.getElementById('pmo').classList.add('hidden');
+    document.getElementById('pwi').value='';
+    switchView('member');
+  } else {
+    document.getElementById('pwe').textContent='Incorrect password. Please try again.';
+    document.getElementById('pwi').value='';
+    document.getElementById('pwi').focus();
+  }
+}
+
+// Trap focus inside modal when open
+document.getElementById('pmo').addEventListener('keydown',function(e){
+  if(e.key==='Escape'){ this.classList.add('hidden'); document.getElementById('tab-member').focus(); }
+});
+
+// ── RENDER FILTERS ───────────────────────────────────────────────
+function renderFilters(){
+  var fa=document.getElementById('fa');
+  var isM=state.view==='member';
+  var h='';
+
+  // Services — grouped
+  h+='<div class="fgroup"><div class="fgroup-label">Service</div>';
+  SERVICE_GROUPS.forEach(function(g){
+    h+='<div style="margin-bottom:6px"><div style="font-size:10px;color:var(--mustard);font-weight:600;margin-bottom:3px;padding-left:2px">'+g.label+'</div>';
+    h+='<div class="fchips">';
+    g.items.forEach(function(it){ h+=makeChip(it.label,'service'); });
+    h+='</div></div>';
+  });
+  h+='</div>';
+
+  // Genres — split fiction/nonfiction
+  h+='<div class="fgroup"><div class="fgroup-label">Genre / Category</div>';
+  h+='<div style="margin-bottom:6px"><div style="font-size:10px;color:var(--mustard);font-weight:600;margin-bottom:3px;padding-left:2px">Fiction</div>';
+  h+='<div class="fchips">';
+  FICTION_FILTERS.forEach(function(f){ h+=makeChip(f.label,'genre'); });
+  h+='</div></div>';
+  h+='<div><div style="font-size:10px;color:var(--mustard);font-weight:600;margin-bottom:3px;padding-left:2px">Nonfiction</div>';
+  h+='<div class="fchips">';
+  NONFICTION_FILTERS.forEach(function(f){ h+=makeChip(f.label,'genre'); });
+  h+='</div></div></div>';
+
+  // Experience
+  h+='<div class="fgroup"><div class="fgroup-label">Experience Level Served</div>';
+  h+='<div class="fchips">';
+  EF.forEach(function(f){ h+=makeChip(f.label,'experience'); });
+  h+='</div></div>';
+
+  // Looking for (member view only)
+  if(isM){
+    h+='<div class="fgroup"><div class="fgroup-label">Looking For</div>';
+    h+='<div class="fchips">';
+    LF.forEach(function(f){ h+=makeChip(f.label,'lookingFor'); });
+    h+='</div></div>';
+  }
+
+  if(hasActiveFilters()){
+    h+='<div class="filter-footer"><button class="clrbtn" onclick="clearFilters()">Clear all filters</button></div>';
+  }
+
+  fa.innerHTML=h;
+}
+
+// ── RENDER CARDS ─────────────────────────────────────────────────
+function renderCards(){
+  var filtered=filterMembers();
+  var sorted=sortMembers(filtered);
+  document.getElementById('rc').textContent='Showing '+sorted.length+' of '+MEMBERS.length+' members';
+  var cg=document.getElementById('cg');
+  if(!sorted.length){
+    cg.innerHTML='<div class="nr"><p>No members match your current filters.</p><button class="clrbtn" onclick="clearFilters()">Clear filters</button></div>';
+    return;
+  }
+  cg.innerHTML=sorted.map(state.view==='author'?authorCard:memberCard).join('');
+}
+
+// ── AUTHOR CARD ──────────────────────────────────────────────────
+function authorCard(m){
+  var h='<article class="card" role="listitem">';
+  h+='<div class="ch">';
+  h+='<div class="cn"><a href="'+escH(m.website)+'" target="_blank" rel="noopener">'+escH(m.name)+'</a></div>';
+  h+='<div class="ct">'+escH(m.audienceSentence)+'</div>';
+  h+='</div>';
+  h+='<div class="cb">';
+  h+=makeBio(m,'a',true);
+  h+=makeServiceGroups(m.services);
+  h+=makeGenreSplit(m.fictionGenres, m.nonfictionCategories);
+  if(m.experienceLevels.length){
+    h+='<div class="cs"><div class="sl">Works with</div>'+makeTags(m.experienceLevels,'te')+'</div>';
+  }
+  h+='</div></article>';
+  return h;
+}
+
+// ── MEMBER CARD ──────────────────────────────────────────────────
+function memberCard(m){
+  var h='<article class="card" role="listitem">';
+  h+='<div class="ch">';
+  h+='<div class="cn"><a href="'+escH(m.website)+'" target="_blank" rel="noopener">'+escH(m.name)+'</a></div>';
+  h+='<div class="ct">'+escH(m.audienceSentence)+'</div>';
+  h+='</div>';
+  h+='<div class="cb">';
+  h+=makeBio(m,'m',false);
+  h+=makeServiceGroups(m.services);
+  h+=makeGenreSplit(m.fictionGenres, m.nonfictionCategories);
+  h+='</div>';
+  // Collab panel
+  h+='<div class="collab">';
+  h+='<div class="collab-grid">';
+  if(m.lookingFor&&m.lookingFor.length){
+    h+='<div><div class="sl">Looking for</div>'+makeTags(m.lookingFor,'tc')+'</div>';
+  }
+  if(m.canProvide&&m.canProvide.length){
+    h+='<div><div class="sl">Can provide</div>'+makeTags(m.canProvide,'ts')+'</div>';
+  }
+  h+='</div>';
+  h+='<div class="collab-contact">';
+  h+='<a class="contact-email" href="mailto:'+escH(m.email)+'">'+escH(m.email)+'</a>';
+  h+='<span class="pricing-badge '+pxClass(m.pricingTier)+'">'+escH(m.pricingTier)+'</span>';
+  h+='</div></div>';
+  // More details
+  h+='<button class="mt" onclick="toggleDetails('+m.id+')" aria-expanded="false"><span id="mdt'+m.id+'">&#9658; More details</span></button>';
+  h+='<div class="md" id="md'+m.id+'" aria-hidden="true">';
+  if(m.topOffers)         h+=detailRow('Top Offers',escH(m.topOffers));
+  if(m.challenge2026)     h+=detailRow('2026 Challenge',escH(m.challenge2026));
+  if(m.referralsAccepting)h+=detailRow('Referrals: Accepting',escH(m.referralsAccepting));
+  if(m.affiliatesSeeking) h+=detailRow('Affiliate Program',escH(m.affiliatesSeeking));
+  if(m.podcastSpeaking)   h+=detailRow('Podcast / Speaking',escH(m.podcastSpeaking));
+  if(m.guestTeachTopics)  h+=detailRow('Can Guest Teach',escH(m.guestTeachTopics));
+  if(m.listSize)          h+=detailRow('Email List','<span class="ls">'+escH(m.listSize)+' subscribers</span>');
+  if(m.socialHandles)     h+=detailRow('Social Media',escH(m.socialHandles));
+  if(m.referOutClients)   h+=detailRow('Will Refer Out',escH(m.referOutClients));
+  if(m.anythingElse)      h+=detailRow('Additional Notes',escH(m.anythingElse));
+  h+='</div>';
+  h+='</article>';
+  return h;
+}
+
+// ── INIT ─────────────────────────────────────────────────────────
+renderFilters();
+renderCards();
+</script>
+</body>
+</html>
