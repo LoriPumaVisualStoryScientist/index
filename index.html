@@ -845,16 +845,16 @@ function chipClick(el){
 
 function setFilter(key,val){
   state.filters[key]=(state.filters[key]===val)?null:val;
-  renderFilters(); renderCards();
+  pushState(); renderFilters(); renderCards();
 }
 
 function clearFilters(){
   state.filters={service:null,genre:null,experience:null,lookingFor:null};
   state.search=''; document.getElementById('si').value='';
-  renderFilters(); renderCards();
+  pushState(); renderFilters(); renderCards();
 }
 
-function handleSearch(v){ state.search=v.trim(); renderCards(); }
+function handleSearch(v){ state.search=v.trim(); pushState(); renderCards(); }
 
 function setSort(s){
   state.sort=s;
@@ -863,7 +863,7 @@ function setSort(s){
     btn.classList.toggle('active',k===s);
     btn.setAttribute('aria-pressed', k===s ? 'true':'false');
   });
-  renderCards();
+  pushState(); renderCards();
 }
 
 function pxClass(t){
@@ -986,7 +986,7 @@ function switchView(v){
   state.sort='default';
   document.getElementById('si').value=''; state.search='';
   setSort('default');
-  renderMeetings(); renderFilters(); renderCards();
+  pushState(); renderMeetings(); renderFilters(); renderCards();
 }
 
 // ── PASSWORD ─────────────────────────────────────────────────────
@@ -1239,7 +1239,104 @@ function memberCard(m){
   return h;
 }
 
+
+// ── URL PARAMETER SYNC ───────────────────────────────────────────
+
+// Map filter keys to URL param names
+var PARAM_KEYS = {
+  service: 'service',
+  genre: 'genre',
+  experience: 'experience',
+  lookingFor: 'looking',
+  search: 'search',
+  sort: 'sort',
+  view: 'view'
+};
+
+function buildQueryString(){
+  var params = [];
+  if(state.view === 'member') params.push('view=member');
+  if(state.filters.service)    params.push('service='+encodeURIComponent(state.filters.service));
+  if(state.filters.genre)      params.push('genre='+encodeURIComponent(state.filters.genre));
+  if(state.filters.experience) params.push('experience='+encodeURIComponent(state.filters.experience));
+  if(state.filters.lookingFor) params.push('looking='+encodeURIComponent(state.filters.lookingFor));
+  if(state.search)             params.push('search='+encodeURIComponent(state.search));
+  if(state.sort && state.sort !== 'default') params.push('sort='+encodeURIComponent(state.sort));
+  return params.length ? '?' + params.join('&') : window.location.pathname;
+}
+
+function pushState(){
+  var qs = buildQueryString();
+  history.pushState(null, '', qs);
+}
+
+function applyUrlParams(){
+  var params = new URLSearchParams(window.location.search);
+  // View — only restore member view if already unlocked
+  var view = params.get('view');
+  if(view === 'member' && state.memberUnlocked){
+    state.view = 'member';
+    document.getElementById('tab-author').className='vtab';
+    document.getElementById('tab-author').setAttribute('aria-selected','false');
+    document.getElementById('tab-member').className='vtab active';
+    document.getElementById('tab-member').setAttribute('aria-selected','true');
+    document.getElementById('vdesc').textContent='Browse all members. Filter by what they are looking for to find partnership opportunities.';
+  }
+  // Filters
+  var service = params.get('service');
+  var genre = params.get('genre');
+  var experience = params.get('experience');
+  var looking = params.get('looking');
+  if(service)     state.filters.service = service;
+  if(genre)       state.filters.genre = genre;
+  if(experience)  state.filters.experience = experience;
+  if(looking)     state.filters.lookingFor = looking;
+  // Search
+  var search = params.get('search');
+  if(search){
+    state.search = search;
+    var si = document.getElementById('si');
+    if(si) si.value = search;
+  }
+  // Sort
+  var sort = params.get('sort');
+  if(sort && ['default','az','za'].indexOf(sort) > -1){
+    state.sort = sort;
+    ['default','az','za'].forEach(function(k){
+      var btn = document.getElementById('sort-'+k);
+      if(btn){
+        btn.classList.toggle('active', k===sort);
+        btn.setAttribute('aria-pressed', k===sort ? 'true':'false');
+      }
+    });
+  }
+}
+
+// Listen for browser back/forward
+window.addEventListener('popstate', function(){
+  // Reset state first
+  state.filters = {service:null,genre:null,experience:null,lookingFor:null};
+  state.search = '';
+  state.sort = 'default';
+  state.view = 'author';
+  document.getElementById('tab-author').className='vtab active';
+  document.getElementById('tab-author').setAttribute('aria-selected','true');
+  document.getElementById('tab-member').className='vtab';
+  document.getElementById('tab-member').setAttribute('aria-selected','false');
+  document.getElementById('vdesc').textContent='Browse service providers who can help with your book. Use filters to find the right match by service type, genre, or experience level.';
+  document.getElementById('si').value='';
+  ['default','az','za'].forEach(function(k){
+    var btn=document.getElementById('sort-'+k);
+    if(btn){ btn.classList.toggle('active',k==='default'); btn.setAttribute('aria-pressed',k==='default'?'true':'false'); }
+  });
+  applyUrlParams();
+  renderFilters();
+  renderCards();
+  if(state.view==='member') renderMeetings();
+});
+
 // ── INIT ─────────────────────────────────────────────────────────
+applyUrlParams();
 renderFilters();
 renderCards();
 // meetings banner only shows in member view so no init call needed
