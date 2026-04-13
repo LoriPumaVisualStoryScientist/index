@@ -157,15 +157,15 @@ header{background:var(--forest);padding:18px 32px;border-bottom:3px solid var(--
 .social-link:hover{background:var(--mint);color:var(--forest)}
 .social-link:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 
-/* FREE OFFER */
-.free-offer{border:1px solid var(--mint);border-radius:6px;overflow:hidden;margin-bottom:10px}
-.free-offer-img{width:100%;height:100px;object-fit:cover;display:block}
-.free-offer-body{padding:8px 10px}
-.free-offer-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--amber);margin-bottom:3px}
-.free-offer-desc{font-size:11px;color:var(--text);line-height:1.5;margin-bottom:6px}
-.free-offer-link{font-size:11px;font-weight:700;color:var(--sage);text-decoration:none;font-family:'Open Sans',sans-serif}
-.free-offer-link:hover{text-decoration:underline}
-.free-offer-link:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+/* FEATURED OFFER */
+.featured-offer{border:1px solid var(--mint);border-radius:6px;overflow:hidden;margin-bottom:10px}
+.featured-offer-img{width:100%;height:100px;object-fit:cover;display:block}
+.featured-offer-body{padding:8px 10px}
+.featured-offer-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--amber);margin-bottom:3px}
+.featured-offer-desc{font-size:11px;color:var(--text);line-height:1.5;margin-bottom:6px}
+.featured-offer-link{font-size:11px;font-weight:700;color:var(--sage);text-decoration:none;font-family:'Open Sans',sans-serif}
+.featured-offer-link:hover{text-decoration:underline}
+.featured-offer-link:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 
 /* RESPONSIVE */
 @media(max-width:640px){
@@ -856,7 +856,16 @@ function filterMembers(){
     }
     if(state.filters.experience){
       var fd=EF.find(function(f){return f.label===state.filters.experience;});
-      if(fd && !matchF(m.experienceLevels,fd)) return false;
+      var servesAllLevels = m.experienceLevels.some(function(e){
+        return e.toLowerCase().indexOf('all levels') > -1;
+      });
+      // "All Levels" filter: show only explicit all-levels providers
+      // Other filters: show matching providers AND all-levels providers
+      if(state.filters.experience === 'All Levels'){
+        if(!servesAllLevels) return false;
+      } else {
+        if(fd && !matchF(m.experienceLevels,fd) && !servesAllLevels) return false;
+      }
     }
     if(state.filters.lookingFor && state.view==='member'){
       var fd=LF.find(function(f){return f.label===state.filters.lookingFor;});
@@ -1192,18 +1201,18 @@ function makeSocialLinks(m){
   return h + '</div>';
 }
 
-// ── FREE OFFER ────────────────────────────────────────────────────
-function freeOfferImgErr(img){ img.style.display='none'; }
+// ── FEATURED OFFER ────────────────────────────────────────────────────
+function featuredOfferImgErr(img){ img.style.display='none'; }
 function makeFreeOffer(m){
   if(!m.freeOfferUrl || !m.freeOfferDesc) return '';
-  var h='<div class="free-offer">';
+  var h='<div class="featured-offer">';
   if(m.freeOfferImage && m.freeOfferImage.length>5){
-    h+='<img class="free-offer-img" src="'+escH(m.freeOfferImage)+'" alt="Free offer from '+escH(m.name)+'" onerror="freeOfferImgErr(this)">';
+    h+='<img class="featured-offer-img" src="'+escH(m.freeOfferImage)+'" alt="Free offer from '+escH(m.name)+'" onerror="featuredOfferImgErr(this)">';
   }
-  h+='<div class="free-offer-body">';
-  h+='<div class="free-offer-label">Free Offer</div>';
-  h+='<div class="free-offer-desc">'+escH(m.freeOfferDesc)+'</div>';
-  h+='<a class="free-offer-link" href="'+escH(m.freeOfferUrl)+'" target="_blank" rel="noopener">Get it free &rarr;</a>';
+  h+='<div class="featured-offer-body">';
+  h+='<div class="featured-offer-label">Free Offer</div>';
+  h+='<div class="featured-offer-desc">'+escH(m.freeOfferDesc)+'</div>';
+  h+='<a class="featured-offer-link" href="'+escH(m.freeOfferUrl)+'" target="_blank" rel="noopener">Learn more &rarr;</a>';
   h+='</div></div>';
   return h;
 }
